@@ -1,6 +1,6 @@
 # Matrix_multiply_C/C++ - vincent08tw
 
-## environment
+## Environment
 OS: windows 10  
 IDE: Dev-C++ 5.11  
 
@@ -8,7 +8,7 @@ IDE: Dev-C++ 5.11
 This project is for me to practice C/C++ language and prepare to model Convolution Neural Network in the future.  
 This project is created from 2021/08/27.  
 
-## version description
+## Version Description
 v1 : original and 10*10 max size  
 v2 : flexible array size (compare to v1)  
 v3 : better visible effect print out  
