@@ -19,3 +19,7 @@ v7 : very big change! our class declaration use "new" instead, so every Matrix.s
 v8 : add matrix ID to see how constroctor and deconstroctor work  
 	 add second method to do O = AB (by use void function matrix_multiplication)  
 	 allocate matrix space to Matrix_O# before doing computation  
+v9 : can creat random matrix  
+v10: can do Hadamard product   
+	 can O = A + B   
+v11: can do convolution computing of matrix_a and matrix_b  
