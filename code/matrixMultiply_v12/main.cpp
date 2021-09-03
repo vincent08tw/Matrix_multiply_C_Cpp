@@ -2,9 +2,9 @@
 [file name]--------------
 main.cpp
 [project name]----------
-matrixMultiply_v11
+matrixMultiply_v12
 [despription]------
-matrix operation
+2D matrix operation
 can creat random matrix 
 can do convolution computing conv(A,B)
 can do O = A + B
@@ -17,12 +17,14 @@ can use differend method to do O = AB
 	2. O->matrix_multiplication(A,B)
 
 and output on console window and output file (matrix_o#.txt)
+
+3D matrix convolution (channel, row, column)
 [editor]----
 yu-wen Wang (vincent08tw@gmail.com) (vincent08tw@yahoo.com.tw)
 [create date]---
-2021-08-31 
+2021-09-01 
 [last modify]----
-2021-08-31 
+2021-09-02 
 [additional explain]----
 v1 : original and 10*10 max size  
 v2 : flexible array size (compare to v1)
@@ -38,10 +40,19 @@ v9 : can creat random matrix
 v10: can do Hadamard product
 	 can O = A + B 
 v11: can do convolution computing of matrix_a and matrix_b
+v12: create "class3D.h"
+	 can do 3D matrix convolution
 ****************************/
+#ifndef INCLUDE_H
+#include "include.h"
+#endif
 
 #ifndef CLASS_H
 #include "class.h"
+#endif
+
+#ifndef CLASS3D_H
+#include "class3D.h"
 #endif
 
 #ifndef DEFINE_H
@@ -56,40 +67,47 @@ using namespace std;
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 int main(int argc, char** argv)
 {
-	//srand(time(NULL));
+	srand(time(NULL));
 	
 	// print setting argument in "define.h"
 	print_define_setting(true); //true for print the setting in "define.h"
 	
 	// class declaration
-    Matrix_class *Matrix_A = new Matrix_class;
-    Matrix_class *Matrix_B = new Matrix_class;
-//    Matrix_class *Matrix_O1 = new Matrix_class;
-//    Matrix_class *Matrix_O2 = new Matrix_class;
-//    Matrix_class *Matrix_O3 = new Matrix_class;
-//    Matrix_class *Matrix_O4 = new Matrix_class;
-	Matrix_class *Matrix_O5 = new Matrix_class;
+    Matrix_3D_class *Matrix_A = new Matrix_3D_class;
+    Matrix_3D_class *Matrix_B = new Matrix_3D_class;
+
+	Matrix_3D_class *Matrix_O = new Matrix_3D_class;
 	
 	// decide the size of matrix A and B
-	int ROW_A = 10;
-	int COL_A = 10;
-	int ROW_B = 3;
-	int COL_B = 3;
+	int CNL_A = 3;
+	int ROW_A = 3;
+	int COL_A = 3;
+	int CNL_B = 3;
+	int ROW_B = 2;
+	int COL_B = 2;
 	
 	#if SIZE_IN_AUTO == 1
+	cout<<"enter the number of channel of A = " << CNL_A << " (auto)\n";    
+    Matrix_A->set_numberOfChannel(CNL_A); 
     cout<<"enter the number of row of A = " << ROW_A << " (auto)\n";    
     Matrix_A->set_numberOfRow(ROW_A); 
     cout<<"enter the number of column of A = " << COL_A << " (auto)\n";    
     Matrix_A->set_numberOfColumn(COL_A); 
+    cout<<"enter the number of channel of B = " << CNL_B << " (auto)\n";    
+    Matrix_B->set_numberOfChannel(CNL_B);
 	cout<<"enter the number of row of B = " << ROW_B << " (auto)\n";    
     Matrix_B->set_numberOfRow(ROW_B); 
     cout<<"enter the number of column of B = " << COL_B << " (auto)\n";    
     Matrix_B->set_numberOfColumn(COL_B); 
     #else 
+    cout<<"enter the number of channel of A = ";    
+    Matrix_A->set_numberOfChannel(); 
     cout<<"enter the number of row of A = ";    
     Matrix_A->set_numberOfRow(); 
     cout<<"enter the number of column of A = ";    
     Matrix_A->set_numberOfColumn(); 
+    cout<<"enter the number of channel of B = ";    
+    Matrix_B->set_numberOfChannel(); 
 	cout<<"enter the number of row of B = ";    
     Matrix_B->set_numberOfRow(); 
     cout<<"enter the number of column of B = ";    
@@ -103,8 +121,8 @@ int main(int argc, char** argv)
     /**** Creat randon int matrix ****/
     #if CREAT_RANDOM_MATRIX == 1
     cout << "\n>> creat random matrix \"matrix_a.txt\", \"matrix_b.txt\" \n";
-    Matrix_A->creat_random_int_matrix("matrix_a.txt",  -3, 3);
-    Matrix_B->creat_random_int_matrix("matrix_b.txt",  -3, 3);
+    Matrix_A->creat_random_int_matrix("matrix_a.txt",  0, 3);
+    Matrix_B->creat_random_int_matrix("matrix_b.txt",  0, 3);
     //can also use creat_random_int_matrix("matrix_b.txt", ROW_B, COL_B, 0, 5); it will auto allocate
     #endif
     
@@ -116,9 +134,9 @@ int main(int argc, char** argv)
     Matrix_B->set_content_from_txt("matrix_b.txt");
     #else
     cout << "\n enter the first matrix (A) element =\n";
-	Matrix_A->set_content();  
+//	Matrix_A->set_content();  
 	cout << "\n enter the second matrix (B) element =\n";    
-    Matrix_B->set_content(); 
+//    Matrix_B->set_content(); 
     #endif
 	
     /**** for printing matrix A ****/  
@@ -130,62 +148,16 @@ int main(int argc, char** argv)
 	Matrix_B->print_content();
 	
 	/**** computing O = conv(A,B)****/
-	Matrix_O5->matrix_convolution(*Matrix_A, *Matrix_B);
+	Matrix_O->matrix_convolution(*Matrix_A, *Matrix_B);
 	/**** for printing result ****/ 
-	cout << "\n output matrix O5 = \n"; 
-	Matrix_O5->print_content();
-	Matrix_O5->write_content_to_txt("matrix_o5.txt");
+	cout << "\n output matrix O = \n"; 
+	Matrix_O->print_content();
+	Matrix_O->write_content_to_txt("matrix_o.txt");
 	
-	delete Matrix_O5;
-//	
-//	/**** Output matrix size depend on matrix A and B ****/
-//	/**** Output matrix space allocation****/
-//    // example A: 3*5 | B: 5*2 
-//	//      -> O: 3     *    2
-//	Matrix_O1->set_matrix_size_2D(Matrix_A->get_numberOfRow(), Matrix_B->get_numberOfColumn() );
-//	Matrix_O2->set_matrix_size_2D(Matrix_A->get_numberOfRow(), Matrix_B->get_numberOfColumn() );
-//	Matrix_O3->set_matrix_size_2D(Matrix_A->get_numberOfRow(), Matrix_B->get_numberOfColumn() );
-//	Matrix_O4->set_matrix_size_2D(Matrix_A->get_numberOfRow(), Matrix_B->get_numberOfColumn() );
-//	
-//	/**** computing O = AB****/
-//	cout << "\n computing O1 = AB ...\n\n";
-//	*Matrix_O1 = (*Matrix_A) * (*Matrix_B);
-//	/**** computing O = BA****/
-//	cout << "\n computing O2 = BA ...\n\n";
-//	Matrix_O2->matrix_multiplication(*Matrix_B, *Matrix_A);
-//	/**** computing O = Hadamard(A,B)****/
-//	cout << "\n computing O3 = Hadamard(A,B) ...\n\n";
-//	Matrix_O3->matrix_Hadamard_product(*Matrix_A, *Matrix_B);
-//	/**** computing O = A + B****/
-//	cout << "\n computing O4 = A + B ...\n\n";
-//	*Matrix_O4 = (*Matrix_A) + (*Matrix_B);
-////	Matrix_O4->matrix_addition(*Matrix_B, *Matrix_A);
-//	
-//    /**** for printing result ****/ 
-//    cout << "\n output matrix O1 = \n"; 
-//	Matrix_O1->print_content();
-//	cout << "\n output matrix O2 = \n"; 
-//	Matrix_O2->print_content();
-//	cout << "\n output matrix O3 = \n"; 
-//	Matrix_O3->print_content();
-//	cout << "\n output matrix O4 = \n"; 
-//	Matrix_O4->print_content();
-//	cout << "\n inner product A¡DB = " << Matrix_O3->inner_product(*Matrix_A, *Matrix_B) << "\n"; 
-//	cout << "\n inner product A¡DB = " << inner_product(*Matrix_A, *Matrix_B) << "\n"; 
-//	
-//	/**** write output to txt****/
-//	Matrix_O1->write_content_to_txt("matrix_o1.txt");
-//	Matrix_O2->write_content_to_txt("matrix_o2.txt");
-//	Matrix_O3->write_content_to_txt("matrix_o3.txt");
-//	Matrix_O4->write_content_to_txt("matrix_o4.txt");
-//	
-//	delete Matrix_A;
-//	delete Matrix_B;
-//	delete Matrix_O1;
-//	delete Matrix_O2;
-//	delete Matrix_O3;
-//	delete Matrix_O4;
-//	
+	delete Matrix_A;
+	delete Matrix_B;
+	delete Matrix_O;
+	
 	system("pause");
     return 0;  
 }

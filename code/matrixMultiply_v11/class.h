@@ -267,6 +267,7 @@ void Matrix_class::matrix_addition(Matrix_class A, Matrix_class B)
 	inner_product_size_detection(col_A, col_A, row_B, col_B);
 	
 	/* allocation a space for output matrix */
+	this->set_matrix_size_2D(row_A,row_B);
 	
 	for(i = 0;i < row_A;i++)
 	{

@@ -64,10 +64,10 @@ int main(int argc, char** argv)
     Matrix_class *Matrix_O4 = new Matrix_class;
 	
 	// decide the size of matrix A and B
-	int ROW_A = 10;
-	int COL_A = 10;
-	int ROW_B = 10;
-	int COL_B = 10;
+	int ROW_A = 2;
+	int COL_A = 2;
+	int ROW_B = 2;
+	int COL_B = 2;
 	
 	#if SIZE_IN_AUTO == 1
     cout<<"enter the number of row of A = " << ROW_A << " (auto)\n";    

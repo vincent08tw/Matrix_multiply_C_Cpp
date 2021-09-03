@@ -2,15 +2,15 @@
 [file name]--------------
 class.h
 [project name]----------
-matrixMultiply_v10
+matrixMultiply_v12
 [despription]------
 matrix multiply
 [editor]----
 yu-wen Wang (vincent08tw@gmail.com) (vincent08tw@yahoo.com.tw)
 [create date]---
-2021-08-31 
+2021-09-01 
 [last modify]----
-2021-08-31 
+2021-09-01 
 [additional explain]----
 v6 : add function of Matrix_class
 	 void set_content_from_txt(char filename[]);
@@ -19,19 +19,17 @@ v9 : void matrix_Hadamard_product(Matrix_class,Matrix_class);
 	 void creat_random_int_matrix(string filename, int row, int col, int min, int max);
 v10: int inner_product(Matrix_class, Matrix_class);
 	 matrix addition
+v11: void matrix_convolution(Matrix_class, Matrix_class);
 ****************************/
 
 
 #ifndef CLASS_H
 #define CLASS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <iostream>  
-#include <fstream>
-#include <iomanip>
-#include <time.h>
+
+#ifndef INCLUDE_H
+#include "include.h"
+#endif
 
 #ifndef DEFINE_H
 #include "define.h"
@@ -55,14 +53,16 @@ class Matrix_class
 		int ID; // ID for class
 		Matrix_class() //constroctor
 		{
-			numberOfRow = 0;
-			numberOfColumn = 0;
-			this->matrix_allocation();
 			#if DEBUG_MODE == 1
 			ID = idcount;
 			cout << "Matrix_class ID: " << ID << " is created \n";
 			idcount_increase(); //idcount++
 			#endif
+			//initialize matrix size and space
+			this->numberOfRow = 0;
+			this->numberOfColumn = 0;
+			this->matrix_allocation();
+			
 		}
 		
 		//content of matrix
@@ -96,6 +96,7 @@ class Matrix_class
 		//return number of column of matrix
 		int get_numberOfColumn();
 		
+		void matrix_convolution(Matrix_class, Matrix_class);
 		void matrix_multiplication(Matrix_class, Matrix_class);
 		void matrix_Hadamard_product(Matrix_class, Matrix_class);
 		void matrix_addition(Matrix_class, Matrix_class);
@@ -120,6 +121,45 @@ class Matrix_class
 	protected:
 		// Protected Declarations
 };
+void Matrix_class::matrix_convolution(Matrix_class input, Matrix_class kernel)
+{
+	int i, j, a, b; // for loop
+	
+	int ROW_input = input.get_numberOfRow();
+	int ROW_kernel = kernel.get_numberOfRow();
+	int COL_input = input.get_numberOfColumn();
+	int COL_kernel = kernel.get_numberOfColumn();
+	
+	int col_bias = 0;
+	int row_bias = 0;
+	//input and kernel need be square matrix and input size must bigger than kernel
+	convolution_size_detection(ROW_input, COL_input, ROW_kernel, COL_kernel); 
+	
+	//compute output matrix size
+	int output_matrix_size = ROW_input - ROW_kernel + 1;
+	
+	this->set_matrix_size_2D(output_matrix_size, output_matrix_size);
+	
+	Matrix_class input_slice;
+	input_slice.set_matrix_size_2D(ROW_kernel, COL_kernel);
+	for(a = 0; a < output_matrix_size;a++)
+	{
+		col_bias = 0;
+		for(b = 0;b < output_matrix_size;b++)
+		{
+			for(i = 0;i < ROW_kernel;i++)
+			{
+				for(j = 0;j < COL_kernel;j++)
+				{
+					input_slice.matrix_content[i][j] = input.matrix_content[i+row_bias][j+col_bias];
+				}
+			}
+			this->matrix_content[a][b] = inner_product(input_slice, kernel);
+			col_bias++;
+		}
+		row_bias++;
+	}
+}
 void Matrix_class::creat_random_int_matrix(string filename, int row, int col, int min, int max)
 {
 	int i,j;
@@ -177,6 +217,9 @@ void Matrix_class::creat_random_int_matrix(string filename, int min, int max)
 	    {   
 	        for(j = 0;j < this->get_numberOfColumn();j++)    
 	        {   
+	        	fout.flags(ios::right|ios::fixed);
+	        	fout.fill(' ');
+	        	fout.width(5);
 				this->matrix_content[i][j] = rand() % (max - min + 1) + min;
 	        	fout << this->matrix_content[i][j] << ' ';
 	        }
@@ -228,6 +271,7 @@ void Matrix_class::matrix_addition(Matrix_class A, Matrix_class B)
 	inner_product_size_detection(col_A, col_A, row_B, col_B);
 	
 	/* allocation a space for output matrix */
+	this->set_matrix_size_2D(row_A,row_B);
 	
 	for(i = 0;i < row_A;i++)
 	{
@@ -453,6 +497,9 @@ void Matrix_class::write_content_to_txt(string filename)
 	    {   
 	        for(column = 0;column < this->numberOfColumn;column++)    
 	        {   
+	        	fout.flags(ios::right|ios::fixed);
+	        	fout.fill(' ');
+	        	fout.width(5);
 	        	fout << this->matrix_content[row][column] << ' ';
 	        }
 			fout << "\n";  
@@ -514,4 +561,5 @@ int inner_product(Matrix_class A, Matrix_class B)
 	}
 	return temp;
 }
+
 #endif

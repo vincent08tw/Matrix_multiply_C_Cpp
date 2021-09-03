@@ -1,6 +1,6 @@
 [Project]
-FileName=matrixMultiply_v11.dev
-Name=matrixMultiply_v11
+FileName=matrixMultiply_v13.dev
+Name=matrixMultiply_v13
 Type=1
 Ver=2
 ObjFiles=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=4
+UnitCount=6
 
 [VersionInfo]
 Major=1
@@ -71,7 +71,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=define.h
+FileName=class3D.h
 CompileCpp=1
 Folder=
 Compile=1
@@ -81,7 +81,27 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
+FileName=define.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
 FileName=function.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit6]
+FileName=include.h
 CompileCpp=1
 Folder=
 Compile=1
